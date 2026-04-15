@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+*.vsidx
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.json
+*.user
+/CLEARCore/.vs
