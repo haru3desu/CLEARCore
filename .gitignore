@@ -38,3 +38,7 @@
 *.json
 *.user
 /CLEARCore/.vs
+*.ilk
+*.ilk
+*.log
+*.tlog
