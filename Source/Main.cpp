@@ -1,47 +1,23 @@
-#include <windows.h>
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#include <crtdbg.h>
 
-// ウィンドウプロシージャ（OSからの通知を処理する関数）
-LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+#include "FrameWork/Core.h"
+
+/**
+ * @brief エントリーポイント
+ */
+int WINAPI WinMain(_In_ HINSTANCE h_instance, _In_opt_ HINSTANCE h_prev_instance, _In_ LPSTR lp_cmd_line, _In_ int n_cmd_show)
 {
-    switch (uMsg)
+    // メモリリーク検出の有効化
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+    auto p_core = std::make_unique<EngineCore::Core>();
+
+    if (FAILED(p_core->Run()))
     {
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-    }
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-
-// エントリーポイント
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-    const wchar_t CLASS_NAME[] = L"CLEARCoreWindowClass";
-
-    WNDCLASS wc = {};
-    wc.lpfnWndProc = WindowProc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = CLASS_NAME;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-
-    RegisterClass(&wc);
-
-    HWND hWnd = CreateWindowEx(
-        0, CLASS_NAME, L"CLEARCore Engine",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
-        NULL, NULL, hInstance, NULL
-    );
-
-    if (hWnd == NULL) return 0;
-
-    ShowWindow(hWnd, nCmdShow);
-
-    // メッセージループ
-    MSG msg = {};
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        return -1;
     }
 
     return 0;

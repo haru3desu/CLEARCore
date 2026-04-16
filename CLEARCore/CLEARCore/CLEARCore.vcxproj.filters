@@ -13,10 +13,54 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ヘッダー ファイル\FrameWork">
+      <UniqueIdentifier>{8eaa672e-cc9a-4118-b766-6c3fdfd2f792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\FrameWork\Interface">
+      <UniqueIdentifier>{e018ffb9-81c9-43c5-a542-ec40bc7ae97f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Front">
+      <UniqueIdentifier>{cb999804-801e-48f0-9b80-eef4e96a3dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Front\Config">
+      <UniqueIdentifier>{3830c048-1c0c-4b83-9139-1512b2c5d710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\FrameWork\System">
+      <UniqueIdentifier>{106e44e3-6bd7-4cae-a130-2722c57ed5a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\FrameWork">
+      <UniqueIdentifier>{3fdc7e87-5869-45e6-a795-a32eb67e8e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\FrameWork\System">
+      <UniqueIdentifier>{84204f9f-0a92-43be-a41b-ffa604362c9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\FrameWork\System\WindowSystem.cpp">
+      <Filter>ソース ファイル\FrameWork\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FrameWork\Core.cpp">
+      <Filter>ソース ファイル\FrameWork</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Include\FrameWork\Interface\ISystem.h">
+      <Filter>ヘッダー ファイル\FrameWork\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Front\Config\Constants.h">
+      <Filter>ヘッダー ファイル\Front\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\FrameWork\CoreTypes.h">
+      <Filter>ヘッダー ファイル\FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\FrameWork\System\WindowSystem.h">
+      <Filter>ヘッダー ファイル\FrameWork\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\FrameWork\Core.h">
+      <Filter>ヘッダー ファイル\FrameWork</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
