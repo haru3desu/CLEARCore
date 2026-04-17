@@ -1,28 +1,57 @@
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+
+
 #include "FrameWork/Core.h"
+#include <algorithm>
 #include <assert.h>
 #include "FrameWork/System/WindowSystem.h"
+#include "FrameWork/System/EventSystem.h"
+#include "FrameWork/System/InputSystem.h"
 
 namespace EngineCore
 {
     Core::Core()
         : m_IsRunning(false)
+        , m_pWindowSystem(nullptr)
     {
+    }
+
+    void Core::AddSystem(std::unique_ptr<ISystem> p_system)
+    {
+        m_Systems.push_back(std::move(p_system));
+
+        // 優先度順に昇順ソート
+        std::sort(m_Systems.begin(), m_Systems.end(), [](const auto& a, const auto& b)
+            {
+                return static_cast<int>(a->GetPriority()) < static_cast<int>(b->GetPriority());
+            });
     }
 
     [[nodiscard]] HResult Core::Init()
     {
-        // 規定2: unique_ptr を使用
-        // WindowSystem の登録
+        // 1. EventSystem (実体は最後に Update されるが、ポインタは先に必要)
+        auto p_event = std::make_unique<EventSystem>();
+        EventSystem* p_event_raw = p_event.get();
+        AddSystem(std::move(p_event));
+
+        // 2. WindowSystem
         auto p_window = std::make_unique<WindowSystem>();
-        if (FAILED(p_window->Init()))
-        {
-            assert(false && "Failed to Initialize WindowSystem.");
-            return kEFail;
-        }
-        m_Systems.push_back(std::move(p_window));
+        m_pWindowSystem = p_window.get();
+        p_window->SetEventSystem(p_event_raw);
+        if (FAILED(p_window->Init())) return kEFail;
+        AddSystem(std::move(p_window));
 
-        // 今後、EventSystem や InputSystem も同様に登録
+        // 3. InputSystem
+        auto p_input = std::make_unique<InputSystem>();
+        m_pInputSystem = p_input.get(); // メンバに保持
+        m_pInputSystem->SetEventSystem(p_event_raw);
 
+        if (FAILED(m_pInputSystem->Init())) return kEFail;
+        AddSystem(std::move(p_input));
+
+        // 全てのシステムを Init 済みの状態で登録完了
         m_IsRunning = true;
         return kSOk;
     }
@@ -45,14 +74,26 @@ namespace EngineCore
 
     void Core::Update()
     {
-        constexpr float kDeltaTime = 0.016f; // 仮の固定値
+        constexpr float kDeltaTime = 0.016f;
 
         for (auto& p_system : m_Systems)
         {
             p_system->Update(kDeltaTime);
         }
 
-        // ここで WindowSystem の ShouldClose() 等をチェックして m_IsRunning を制御するロジックが必要
+        // dynamic_cast ループを削除し、メンバを直接使用
+        if (m_pInputSystem)
+        {
+            if (m_pInputSystem->IsKeyDown(KeyCode::kSpace))
+            {
+                OutputDebugStringA(">> [Input Test] Optimized Space Check\n");
+            }
+        }
+
+        if (m_pWindowSystem && m_pWindowSystem->ShouldClose())
+        {
+            m_IsRunning = false;
+        }
     }
 
     void Core::UnInit()

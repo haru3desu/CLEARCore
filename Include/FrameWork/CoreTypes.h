@@ -20,15 +20,19 @@ typedef struct HINSTANCE__* HINSTANCE;
 
 namespace EngineCore
 {
+    using Int = int;
+    using UInt = unsigned int;
     using HResult = long;
 
-#ifndef FAILED
-#define FAILED(hr) (((long)(hr)) < 0)
+#ifdef FAILED
+#undef FAILED
+#endif
+#ifdef SUCCEEDED
+#undef SUCCEEDED
 #endif
 
-#ifndef SUCCEEDED
+#define FAILED(hr) (((long)(hr)) < 0)
 #define SUCCEEDED(hr) (((long)(hr)) >= 0)
-#endif
 
     static constexpr HResult kSOk = 0L;
     static constexpr HResult kEFail = 0x80004005L;
@@ -37,5 +41,4 @@ namespace EngineCore
     using LResult = long long;
     using WParam = unsigned __int64;
     using LParam = long long;
-    using UInt = unsigned int;
 }

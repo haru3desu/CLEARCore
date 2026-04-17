@@ -4,6 +4,7 @@
 #include <assert.h>
 
 #include "FrameWork/System/WindowSystem.h"
+#include "FrameWork/System/EventSystem.h"
 #include "Front/Config/Constants.h"
 
 // 規定2: Allmanスタイルを採用
@@ -18,41 +19,61 @@ namespace EngineCore
     // ウィンドウプロシージャ
     LResult CALLBACK WindowSystem::WindowProc(HWND hwnd, UInt u_msg, WParam w_param, LParam l_param)
     {
+        WindowSystem* p_this = nullptr;
+
+        if (u_msg == WM_NCCREATE)
+        {
+            // CreateWindowEx の最後の引数 (this) を取り出す
+            LPCREATESTRUCTW p_create = reinterpret_cast<LPCREATESTRUCTW>(l_param);
+            p_this = reinterpret_cast<WindowSystem*>(p_create->lpCreateParams);
+            // HWND に自分自身のポインタを刻む
+            SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(p_this));
+        }
+        else
+        {
+            // 刻んでおいたポインタを取り出す
+            p_this = reinterpret_cast<WindowSystem*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+        }
+
+        // EventSystem が接続されていれば、メッセージを配送
+        if (p_this && p_this->m_pEventSystem)
+        {
+            p_this->m_pEventSystem->PushEvent(hwnd, u_msg, w_param, l_param);
+        }
+
         switch (u_msg)
         {
         case WM_DESTROY:
-            // 「×」ボタン等が押された際、OSのメッセージキューに WM_QUIT を投げる
             PostQuitMessage(0);
             return 0;
-
         default:
-            // 興味のないメッセージはOSの標準処理に任せる
             return DefWindowProcW(hwnd, u_msg, w_param, l_param);
         }
     }
 
+    // 引数なしに変更。ヘッダの宣言と一致させる
     [[nodiscard]] HResult WindowSystem::Init()
     {
+        // m_pEventSystem は事前に SetEventSystem で設定されている前提
         HINSTANCE h_instance = GetModuleHandle(nullptr);
 
         // 1. ウィンドウクラスの登録
         WNDCLASSEXW wcex = { sizeof(WNDCLASSEX) };
         wcex.style = CS_HREDRAW | CS_VREDRAW;
         wcex.lpfnWndProc = WindowProc;
+        wcex.cbClsExtra = 0; // 追加
+        wcex.cbWndExtra = 0; // 追加
         wcex.hInstance = h_instance;
         wcex.lpszClassName = kWindowClassName;
         wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wcex.hIcon = nullptr; // 追加
 
-        if (!RegisterClassExW(&wcex))
-        {
-            return kEFail;
-        }
+        if (!RegisterClassExW(&wcex)) return kEFail;
 
-        // 2. ウィンドウサイズの計算（クライアント領域を Constants.h の値に合わせる）
         RECT rc = { 0, 0, kDefaultWindowWidth, kDefaultWindowHeight };
         AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-        // 3. ウィンドウ生成
+        // 3. ウィンドウ生成 (引数は合計12個必要)
         m_Hwnd = CreateWindowExW(
             0,
             kWindowClassName,
@@ -62,16 +83,13 @@ namespace EngineCore
             CW_USEDEFAULT,
             rc.right - rc.left,
             rc.bottom - rc.top,
-            nullptr,
-            nullptr,
+            nullptr,    // hWndParent
+            nullptr,    // hMenu
             h_instance,
-            nullptr
+            this        // lpParam (12個目)
         );
 
-        if (!m_Hwnd)
-        {
-            return kEFail;
-        }
+        if (!m_Hwnd) return kEFail;
 
         ShowWindow(m_Hwnd, SW_SHOW);
         UpdateWindow(m_Hwnd);

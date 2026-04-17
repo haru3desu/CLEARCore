@@ -128,6 +128,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\FrameWork\Core.cpp" />
+    <ClCompile Include="..\..\Source\FrameWork\System\EventSystem.cpp" />
+    <ClCompile Include="..\..\Source\FrameWork\System\InputSystem.cpp" />
     <ClCompile Include="..\..\Source\FrameWork\System\WindowSystem.cpp" />
     <ClCompile Include="..\..\Source\Main.cpp" />
   </ItemGroup>
@@ -135,6 +137,8 @@
     <ClInclude Include="..\..\Include\FrameWork\Core.h" />
     <ClInclude Include="..\..\Include\FrameWork\CoreTypes.h" />
     <ClInclude Include="..\..\Include\FrameWork\Interface\ISystem.h" />
+    <ClInclude Include="..\..\Include\FrameWork\System\EventSystem.h" />
+    <ClInclude Include="..\..\Include\FrameWork\System\InputSystem.h" />
     <ClInclude Include="..\..\Include\FrameWork\System\WindowSystem.h" />
     <ClInclude Include="..\..\Include\Front\Config\Constants.h" />
   </ItemGroup>

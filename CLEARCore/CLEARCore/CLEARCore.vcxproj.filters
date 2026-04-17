@@ -45,6 +45,12 @@
     <ClCompile Include="..\..\Source\FrameWork\Core.cpp">
       <Filter>ソース ファイル\FrameWork</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\FrameWork\System\EventSystem.cpp">
+      <Filter>ソース ファイル\FrameWork\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\FrameWork\System\InputSystem.cpp">
+      <Filter>ソース ファイル\FrameWork\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\FrameWork\Interface\ISystem.h">
@@ -61,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Include\FrameWork\Core.h">
       <Filter>ヘッダー ファイル\FrameWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\FrameWork\System\EventSystem.h">
+      <Filter>ヘッダー ファイル\FrameWork\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\FrameWork\System\InputSystem.h">
+      <Filter>ヘッダー ファイル\FrameWork\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

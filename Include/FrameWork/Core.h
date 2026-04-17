@@ -6,11 +6,18 @@
 
 namespace EngineCore
 {
+    // --- 前方宣言 ---
+    class WindowSystem;
+    class InputSystem;
+
     class Core
     {
     public:
         Core();
         ~Core() = default;
+
+        // システムの外部登録
+        void AddSystem(std::unique_ptr<ISystem> p_system);
 
         [[nodiscard]] HResult Run();
 
@@ -21,5 +28,9 @@ namespace EngineCore
 
         bool m_IsRunning;
         std::vector<std::unique_ptr<ISystem>> m_Systems;
+
+        // WindowSystem への参照（終了判定用）
+        WindowSystem* m_pWindowSystem;
+        InputSystem* m_pInputSystem;
     };
 }
